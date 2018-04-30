@@ -274,6 +274,7 @@
     <module>security</module>
     <module>resource-adapter</module>
     <module>microprofile</module>
+    <module>microprofile-lra</module>
     <module>logstash</module>
     <module>opentracing</module>
     <module>jaeger</module>
