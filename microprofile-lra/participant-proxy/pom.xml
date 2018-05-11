@@ -40,6 +40,7 @@
                     <properties>
                         <swarm.http.port>8080</swarm.http.port>
                         <swarm.debug.port>${swarm.debug.port}</swarm.debug.port>
+                        <swarm.transactions.node-identifier>2</swarm.transactions.node-identifier>
                     </properties>
                 </configuration>
                 <executions>
@@ -79,21 +80,6 @@
     </build>
 
     <dependencies>
-
-        <!--
-             TODO the org.wildfly.swarm:microprofile-lra fraction LraAnnotationProcessingExtension
-             does not get called for app deployments unless the following dependency is present
-        -->
-<!--        <dependency>
-            <groupId>org.wildfly</groupId>
-            <artifactId>wildfly-weld</artifactId>
-            <version>12.0.0.Final</version>
-        </dependency>-->
-<!--        <dependency>
-            <groupId>org.eclipse.microprofile.lra</groupId>
-            <artifactId>microprofile-lra-tck</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>-->
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>microprofile-lra</artifactId>

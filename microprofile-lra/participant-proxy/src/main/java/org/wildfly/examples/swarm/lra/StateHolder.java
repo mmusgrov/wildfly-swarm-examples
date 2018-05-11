@@ -1,10 +1,11 @@
 package org.wildfly.examples.swarm.lra;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Singleton;
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Singleton
+@ApplicationScoped
 public class StateHolder implements Serializable {
     private AtomicInteger completedCount = new AtomicInteger(0);
     private AtomicInteger compensatedCount = new AtomicInteger(0);

@@ -40,6 +40,7 @@
                     <properties>
                         <swarm.http.port>8080</swarm.http.port>
                         <swarm.debug.port>${swarm.debug.port}</swarm.debug.port>
+                        <swarm.transactions.node-identifier>2</swarm.transactions.node-identifier>
                     </properties>
                 </configuration>
                 <executions>
@@ -79,30 +80,10 @@
     </build>
 
     <dependencies>
-
-        <!--
-             TODO the org.wildfly.swarm:microprofile-lra fraction LraAnnotationProcessingExtension
-             does not get called for app deployments unless either of the following dependencies are
-             is present
-        -->
-<!--        <dependency>
-            <groupId>org.wildfly</groupId>
-            <artifactId>wildfly-weld</artifactId>
-            <version>12.0.0.Final</version>
-        </dependency>-->
-        <!--
-        -->
-        <dependency>
-            <groupId>javax.enterprise</groupId>
-            <artifactId>cdi-api</artifactId>
-            <version>1.2</version>
-        </dependency>
-
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>microprofile-lra</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>
-
 </project>

@@ -26,6 +26,7 @@ import org.eclipse.microprofile.lra.participant.JoinLRAException;
 import org.eclipse.microprofile.lra.participant.LRAManagement;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
@@ -39,11 +40,14 @@ import java.util.concurrent.TimeUnit;
  */
 @Path(LRAMgmtEgController.LRAM_PATH)
 public class LRAMgmtEgController {
-    public static final String LRAM_PATH = "lram";
-    public static final String LRAM_WORK = "work";
+    static final String LRAM_PATH = "lram";
+    static final String LRAM_WORK = "work";
 
     @Inject
     private LRAManagement lraManagement;
+
+    @Inject
+    private StateHolder stats;
 
     @PUT
     @Path(LRAM_WORK)
@@ -51,7 +55,7 @@ public class LRAMgmtEgController {
         assert lraId != null;
 
         String rcvUrl = lraManagement.joinLRA(
-                new Participant(), null, new URL(lraId), 0L, TimeUnit.SECONDS);
+                new Participant(stats), new ParticipantDeserializer(), new URL(lraId), 0L, TimeUnit.SECONDS);
 
         return Response.ok(rcvUrl).build();
     }

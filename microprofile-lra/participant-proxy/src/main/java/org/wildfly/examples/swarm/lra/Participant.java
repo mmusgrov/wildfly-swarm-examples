@@ -24,6 +24,8 @@ package org.wildfly.examples.swarm.lra;
 import org.eclipse.microprofile.lra.participant.LRAParticipant;
 import org.eclipse.microprofile.lra.participant.TerminationException;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import javax.ws.rs.NotFoundException;
 import java.io.Serializable;
 import java.net.URL;
@@ -31,25 +33,33 @@ import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Participant implements LRAParticipant, Serializable {
-    private static final AtomicInteger COMPLETED_COUNT = new AtomicInteger(0);
-    private static final AtomicInteger COMPENSATED_COUNT = new AtomicInteger(0);
 
-    public static int getCompletedCount() {
-        return COMPLETED_COUNT.get();
+    private StateHolder stats;
+
+    public Participant(StateHolder stats) {
+        this.stats = stats;
     }
 
-    public static int getCompensatedCount() {
-        return COMPENSATED_COUNT.get();
+    public int getCompletedCount() {
+        return stats.getCompletedCount();
+    }
+
+    public int getCompensatedCount() {
+        return stats.getCompensatedCount();
     }
 
     public Future<Void> completeWork(URL lraId) throws NotFoundException, TerminationException {
-        COMPLETED_COUNT.incrementAndGet();
+        int cnt = stats.incrCompletedCount();
+
+        System.out.printf("%d participant completions%n", cnt);
 
         return null;
     }
 
     public Future<Void> compensateWork(URL lraId) throws NotFoundException, TerminationException {
-        COMPENSATED_COUNT.incrementAndGet();
+        int cnt = stats.incrCompensatedCount();
+
+        System.out.printf("%d participant completions%n", cnt);
 
         return null;
     }

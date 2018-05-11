@@ -2,13 +2,13 @@ package org.wildfly.examples.swarm.lra;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
-//import java.util.HashSet;
-//import java.util.Set;
-//import io.narayana.lra.client.internal.proxy.ParticipantProxyResource;
+import java.util.HashSet;
+import java.util.Set;
+import io.narayana.lra.client.internal.proxy.ParticipantProxyResource;
 
 @ApplicationPath("/")
 public class JaxRsActivator extends Application {
-/*    private final Set<Class<?>> classes = new HashSet<>();
+    private final Set<Class<?>> classes = new HashSet<>();
 
     @Override
     public Set<Class<?>> getClasses() {
@@ -17,5 +17,5 @@ public class JaxRsActivator extends Application {
         classes.add(ParticipantProxyResource.class);
 
         return classes;
-    }*/
+    }
 }
