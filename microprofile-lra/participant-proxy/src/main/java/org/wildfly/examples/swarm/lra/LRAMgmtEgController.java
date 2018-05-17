@@ -55,7 +55,7 @@ public class LRAMgmtEgController {
         assert lraId != null;
 
         String rcvUrl = lraManagement.joinLRA(
-                new Participant(stats), new ParticipantDeserializer(), new URL(lraId), 0L, TimeUnit.SECONDS);
+                new Participant(stats), new URL(lraId), 0L, TimeUnit.SECONDS);
 
         return Response.ok(rcvUrl).build();
     }

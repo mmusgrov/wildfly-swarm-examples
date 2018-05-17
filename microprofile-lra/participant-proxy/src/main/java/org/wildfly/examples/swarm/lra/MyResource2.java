@@ -2,6 +2,7 @@ package org.wildfly.examples.swarm.lra;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.GET;
@@ -12,6 +13,7 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
@@ -28,6 +30,7 @@ import static org.wildfly.examples.swarm.lra.LRAMgmtEgController.LRAM_PATH;
 import static org.wildfly.examples.swarm.lra.LRAMgmtEgController.LRAM_WORK;
 
 @Path("/")
+@ApplicationScoped
 public class MyResource2 {
 
     @Inject
@@ -39,9 +42,11 @@ public class MyResource2 {
     @Inject
     private LRAClient lraClient;
 
+    @Inject
+    private JaxRsActivator2 application;
+
     private static Client msClient;
     private WebTarget msTarget;
-    private ParticipantDeserializer participantDeserializer;
 
     @GET
     @Produces("text/plain")
@@ -63,24 +68,21 @@ public class MyResource2 {
         } catch (MalformedURLException e) {
             System.err.printf("WARN: unabled to construct URL: %s%n", e.getMessage());
         }
-
-        participantDeserializer = new ParticipantDeserializer();
-
-        lraManagement.registerDeserializer(participantDeserializer);
     }
 
     @PreDestroy
     private void preDestroy() {
-        lraManagement.unregisterDeserializer(participantDeserializer);
+        application.unregisterDeserializer();
     }
 
     @GET
     @Path("/work")
     @Produces("text/plain")
     public Response testLRAMgmt() {
+        int requestCount = 2;
         URL lraId = lraClient.startLRA("testStartLRA", 120L, TimeUnit.SECONDS);
-
-        IntStream.rangeClosed(1, 2).forEach(i -> doWork(lraId));
+        int completionCount = stats.getCompletedCount();
+        IntStream.rangeClosed(1, requestCount).forEach(i -> doWork(lraId));
 
         try {
             lraClient.closeLRA(lraId);
@@ -88,6 +90,10 @@ public class MyResource2 {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity("Close LRA failed: " + e.getMessage()).build();
         }
+
+        if (completionCount + requestCount != stats.getCompletedCount())
+            return Response.ok(String.format("%d completions expected but only %s",
+                    completionCount + requestCount, get())).build();
 
         return Response.ok(get()).build();
     }
@@ -97,10 +103,12 @@ public class MyResource2 {
                 .queryParam("lraId", lraId.toExternalForm())
                 .request().put(Entity.text(""));
 
-        if (response.getStatus() != Response.Status.OK.getStatusCode()) {
-            throw new WebApplicationException(response);
+        try {
+            if (response.getStatus() != Response.Status.OK.getStatusCode()) {
+                throw new WebApplicationException(response);
+            }
+        } finally {
+            response.close();
         }
-
-        response.close();
     }
 }

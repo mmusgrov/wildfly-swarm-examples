@@ -59,16 +59,31 @@ and to check wether or not the resource was told to complete send the HTTP reque
 
 and expect the response
 
-    1 completed and 0 compensated
+    2 completed and 0 compensated
 
-## Use
+To test that recovery works start the coordinator using a data directory that persists over
+restarts (for example put it in /tmp/txlog):
 
-Since WildFly Swarm apps tend to support one deployment per executable, it
-automatically adds a `jboss-web.xml` to the deployment if it doesn't already
-exist.  This is used to bind the deployment to the root of the web-server,
-instead of using the `.war`'s own name as the application context.
+ java -jar rts/lra/lra-coordinator/target/lra-coordinator-swarm.jar -Dswarm.http.port=8082 -Dswarm.transactions.object-store-path=../txlog &
 
-    http://localhost:8080/
+Now either generate a log for recovery purposes, or use the one in this example directory
+0_ffff0a3f00f9_21bb4791_5afdb3c3_14, if you are using this log then you will need to copy it
+to the relevant directory in the transaction log store:
+`cp 20_ffff0a3f00f9_21bb4791_5afdb3c3_14 /tmp/txlog/ShadowNoFileLockStore/defaultStore/StateManager/BasicAction/TwoPhaseCoordinator/LRA/`
 
-Be aware that you will notice an exception in the logs when accessing the page.
-This is simply an overly verbose message from WildFly that the 'favicon.ico' file couldn't be found.
+To test recovery of the coordinator start the LRA coordinator with this entry in its logs.
+
+The coordinator periodically runs a recovery scan and tries to finish the pending LRA.
+You should see out put similar to the following showing that the participants have been asked to complete:
+
+> 2018-05-17 18:01:14,999 INFO  [stdout] (default task-28) 9 participant completions
+> 2018-05-17 18:01:15,023 INFO  [stdout] (default task-29) 10 participant completions                      
+> 2018-05-17 18:01:15,044 INFO  [stdout] (default task-30) 11 participant completions                      
+> 2018-05-17 18:01:15,065 INFO  [stdout] (default task-31) 12 participant completions                      
+
+If you want to trigger a recovery scan immediately type the following:
+
+> curl http://localhost:8082/lra-recovery-coordinator/recovery
+
+This demonstrates recovery of the coordinator. To test recovery of participants. Just start the example and observe
+that the coordinator attempts completion of the participants.
