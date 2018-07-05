@@ -4,7 +4,7 @@ This example takes a normal [MicroProfile](http://microprofile.io) WAR, and wrap
 a `-swarm` runnable jar.
 
 > Please raise any issues found with this example in our JIRA:
-> https://issues.jboss.org/browse/SWARM
+> https://issues.jboss.org/browse/THORN
 
 ## Project `pom.xml`
 
@@ -46,9 +46,20 @@ within the WildFly Swarm application `.jar`.
 
 ## Run
 
-* mvn clean package && java -Dswarm.http.port=8080 -Dlra.http.port=8082 -jar target/example-microprofile-lra-swarm.jar
+* mvn clean package && java -Dswarm.http.port=8080 -Dlra.http.port=8080 -jar target/rget/lra-example-swarm.jar
 
-The example requires an exteral LRA coordinator to be running on port 8082
+The example runs with an embedded coordinator on port 8080 by including the dependency
+
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>microprofile-lra-coordinator</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
+        </dependency>
+
+The example can run with an external LRA coordinator. For example if one is running port 8082
+then start the example with the system property -Dlra.http.port=8080
+
 To start a compensatable send the HTTP request
 
     curl http://localhost:8080/work

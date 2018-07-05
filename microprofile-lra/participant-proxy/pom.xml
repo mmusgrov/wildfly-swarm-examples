@@ -80,18 +80,23 @@
     </build>
 
     <dependencies>
+        <!-- include the microprofile LRA fraction in oder to participate in LRAs -->
         <dependency>
             <groupId>org.wildfly.swarm</groupId>
             <artifactId>microprofile-lra</artifactId>
             <version>${project.version}</version>
         </dependency>
-
+        <!-- start an embedded LRA coordinator -->
+        <dependency>
+            <groupId>org.wildfly.swarm</groupId>
+            <artifactId>lra-coordinator</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
         <dependency>
             <groupId>javax.enterprise</groupId>
             <artifactId>cdi-api</artifactId>
             <version>1.2</version>
         </dependency>
-
     </dependencies>
-
 </project>

@@ -46,9 +46,11 @@ within the WildFly Swarm application `.jar`.
 
 ## Run
 
-* mvn clean package && java -Dswarm.http.port=8080 -Dlra.http.port=8082 -jar target/example-microprofile-lra-swarm.jar
+* mvn clean package && java -Dswarm.http.port=8080 -Dlra.http.port=8082 -jar target/lra-example-swarm.jar
 
-The example requires an exteral LRA coordinator to be running on port 8082
+The example requires an external LRA coordinator to be running on port 8082 (for example
+you could start the other participant example with an embedded coordinator on port 8082).
+
 To start a compensatable send the HTTP request
 
     curl http://localhost:8080/work
